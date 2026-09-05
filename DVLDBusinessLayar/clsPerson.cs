@@ -41,7 +41,7 @@ namespace DVLDBusinessLayar
             this.Address = string.Empty;
             this.Phone = string.Empty;
             this.Email = string.Empty;
-            this.NationalCountryID = 0;
+            this.NationalCountryID = 169;
             this.ImagePath = null;
 
             this._Mode = enMode.AddNew;
@@ -67,6 +67,23 @@ namespace DVLDBusinessLayar
 
             this._Mode = enMode.Update;
 
+        }
+
+        private bool _AddNewPerson()
+        {
+            
+            this.PersonID = clsDataAccessPeople.AddNewPerson(this.NationalNumber, this.FirstName, this.SecondName,
+                this.ThirdName, this.LastName, this.DateOfBirth, (byte)this.Gender, this.Address, this.Phone,
+                this.Email, this.NationalCountryID, this.ImagePath);
+
+            return this.PersonID > 0;
+        }
+
+        private bool _UpdatePerson()
+        {
+            return clsDataAccessPeople.UpdatePerson(this.PersonID, this.NationalNumber, this.FirstName, this.SecondName,
+                this.ThirdName, this.LastName, this.DateOfBirth, (byte)this.Gender, this.Address, this.Phone,
+                this.Email, this.NationalCountryID, this.ImagePath);
         }
 
         public static clsPerson FindByID(int PersonID)
@@ -97,6 +114,26 @@ namespace DVLDBusinessLayar
             {
                 return null;
 
+            }
+        }
+
+        public bool Save()
+        {
+            if (_Mode == enMode.AddNew)
+            {
+                bool result = _AddNewPerson();
+                if (result)
+                    _Mode = enMode.Update; // Change mode to Update after adding a new person
+                return result;
+            }
+            else if (_Mode == enMode.Update)
+            {
+                return _UpdatePerson();
+
+            }
+            else
+            {
+                throw new InvalidOperationException("Invalid mode for saving person.");
             }
         }
 
