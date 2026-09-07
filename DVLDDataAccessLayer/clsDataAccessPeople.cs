@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -189,6 +191,69 @@ namespace DVLDDataAccessLayer
             }
 
             return isUpdated;
+        }
+
+
+        public static DataTable GetAllPeople()
+        {
+            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+
+            string query = @"SELECT * FROM People";
+
+            SqlCommand command = new SqlCommand(query, connection);
+
+            DataTable dataTable = new DataTable();
+
+            try
+            {
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                if(reader.HasRows)
+                {
+                    dataTable.Load(reader);
+                }
+                reader.Close();
+
+            }catch(Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+            return dataTable;
+        }
+       
+
+        public static bool IsPersonExist(int PersonID)
+        {
+            bool IsFound = false;
+
+            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+            string query = @"SELECT Found=1 FROM People WHERE PersonID=@PersonID";
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@PersonID", PersonID);
+
+            try
+            {
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                IsFound = reader.HasRows;
+                reader.Close();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("error", ex);
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+            return IsFound;
         }
     }
 }
