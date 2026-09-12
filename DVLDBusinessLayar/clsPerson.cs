@@ -11,6 +11,7 @@ namespace DVLDBusinessLayar
     public class clsPerson
     {
         public enum enMode { AddNew = 0, Update = 1 };
+        public enum enSearchFeild { All, PersonID, NationalNumber, FirstName, SecondName, ThirdName, LastName, DateOfBirth, Gender, Phone, Email, CountryName };
         private enMode _Mode = enMode.AddNew;
 
         public enum enGender { Male = 0, Female = 1 };
@@ -68,6 +69,23 @@ namespace DVLDBusinessLayar
 
             this._Mode = enMode.Update;
 
+        }
+
+        private static string _GetFeilName(enSearchFeild Feild)
+        {
+            switch(Feild)
+            {
+                case enSearchFeild.PersonID:return "PersonID";
+                case enSearchFeild.NationalNumber: return "NationalNo";
+                case enSearchFeild.FirstName: return "FirstName";
+                case enSearchFeild.SecondName: return "SecondName";
+                case enSearchFeild.ThirdName: return "ThirdName";
+                case enSearchFeild.LastName: return "LastName";
+                case enSearchFeild.Email: return "Email";
+                case enSearchFeild.Gender: return "Gendor";
+                case enSearchFeild.CountryName: return "CountryName";
+                default: return string.Empty;
+            }
         }
 
         private bool _AddNewPerson()
@@ -138,9 +156,10 @@ namespace DVLDBusinessLayar
             }
         }
 
-        public static DataTable GetAllPeople()
+        public static DataTable GetAllPeople(enSearchFeild Feild, string ValueSearch= null)
         {
-                       return clsDataAccessPeople.GetAllPeople();
+               string FeildName = _GetFeilName(Feild);
+               return clsDataAccessPeople.GetAllPeople(FeildName, ValueSearch);
         }
 
         
