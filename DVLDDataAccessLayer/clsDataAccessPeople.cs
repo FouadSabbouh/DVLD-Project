@@ -194,13 +194,64 @@ namespace DVLDDataAccessLayer
         }
 
 
-        public static DataTable GetAllPeople()
+        public static DataTable GetAllPeople(string FeildName = null, string searchValue = null)
         {
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-            string query = @"SELECT * FROM People";
+            string query = @"SELECT People.PersonID, People.NationalNo, People.FirstName, People.SecondName, People.LastName,
+                                    People.DateOfBirth, People.Gendor, People.Address, People.Phone, People.Email,
+                                    Countries.CountryName, People.ImagePath
+                                FROM     People INNER JOIN
+                                             Countries ON People.NationalityCountryID = Countries.CountryID";
+
+            if(!string.IsNullOrEmpty(FeildName) && !string.IsNullOrEmpty(searchValue) )
+            {
+                if( FeildName == "PersonID")
+                {
+                    if(int.TryParse( searchValue, out int id) )
+                    query += $@"
+                                WHERE People.PersonID = @searchValue";
+                }
+                else if(FeildName == "Gendor")
+                {
+                    if(searchValue == "Male" || searchValue == "Female")
+                    {
+                        query += @"
+                                    WHERE Gendor = @searchValue";
+                    }
+                }
+                else
+                {
+
+                    query += $@"
+                                    WHERE {FeildName} LIKE @searchValue";
+                }
+            }
 
             SqlCommand command = new SqlCommand(query, connection);
+            if (!string.IsNullOrEmpty(FeildName) && !string.IsNullOrEmpty(searchValue))
+            {
+                if (FeildName == "PersonID")
+                {
+                    if (int.TryParse(searchValue, out int id))
+                        command.Parameters.AddWithValue("@searchValue", id);
+
+                }
+                else if (FeildName == "Gendor")
+                {
+                    byte gender = 0;
+                    if (searchValue == "Male")
+                        gender = 0;
+                    else
+                        gender = 1;
+
+                    command.Parameters.AddWithValue("@searchValue", gender);
+                }
+                else
+                {
+                    command.Parameters.AddWithValue("@searchValue", $"{searchValue}%");
+                }
+            }
 
             DataTable dataTable = new DataTable();
 
