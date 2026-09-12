@@ -7,14 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DVLDBusinessLayar;
 
 namespace DVLDUI
 {
-    public partial class Form1 : Form
+    public partial class MainFrm : Form
     {
-        public Form1()
+        public MainFrm()
         {
             InitializeComponent();
+        }
+
+
+        private void peopleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form PeopleMange = new mangePeoplefrm();
+            PeopleMange.ShowDialog();
         }
     }
 }
