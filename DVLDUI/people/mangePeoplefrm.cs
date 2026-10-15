@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DVLDBusinessLayar;
+using DVLDUI.people;
 
 namespace DVLDUI
 {
@@ -47,6 +48,11 @@ namespace DVLDUI
                     break;
                 case 7:
                     People = clsPerson.GetAllPeople(clsPerson.enSearchFeild.Gender, comboBox2.Text);
+                    dataGridView1.DataSource = People;
+                    break;
+
+                default:
+                    People = clsPerson.GetAllPeople(clsPerson.enSearchFeild.All);
                     dataGridView1.DataSource = People;
                     break;
             }
@@ -106,6 +112,7 @@ namespace DVLDUI
             comboBox3.ValueMember = "CountryID";
             comboBox2.SelectedIndex = 0;
             dataGridView1.DataSource = People;
+            _PerformPeopleDataOptions();
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -125,6 +132,14 @@ namespace DVLDUI
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
+            _PerformPeopleDataOptions();
+        }
+
+        private void btnAddPerson_Click(object sender, EventArgs e)
+        {
+            Form AddUpdate = new frmAddUpdatePerson();
+            AddUpdate.ShowDialog();
+
             _PerformPeopleDataOptions();
         }
     }

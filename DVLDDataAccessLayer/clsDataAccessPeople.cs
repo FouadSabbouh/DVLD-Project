@@ -306,5 +306,33 @@ namespace DVLDDataAccessLayer
 
             return IsFound;
         }
+
+        public static bool IsPersonExist(string NatoinalNo)
+        {
+            bool IsFound = false;
+
+            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+            string query = @"SELECT Found=1 FROM People WHERE NationalNo=@NationalNumber";
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@NationalNumber", NatoinalNo);
+
+            try
+            {
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                IsFound = reader.HasRows;
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("error", ex);
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+            return IsFound;
+        }
     }
 }

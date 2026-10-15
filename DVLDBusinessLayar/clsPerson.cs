@@ -27,8 +27,8 @@ namespace DVLDBusinessLayar
         public string Address { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
-        public int NationalCountryID { get; set; }
         public string ImagePath { get; set; }
+        public clsCountry Country { get; set;}
 
         public clsPerson()
         {
@@ -43,7 +43,7 @@ namespace DVLDBusinessLayar
             this.Address = string.Empty;
             this.Phone = string.Empty;
             this.Email = string.Empty;
-            this.NationalCountryID = 169;
+            this.Country = clsCountry.FindCountryByID(169);
             this.ImagePath = null;
 
             this._Mode = enMode.AddNew;
@@ -65,7 +65,7 @@ namespace DVLDBusinessLayar
             this.Phone = Phone;
             this.Email = Email;
             this.ImagePath = ImagePath;
-            this.NationalCountryID = NationalCountryID;
+            this.Country = clsCountry.FindCountryByID(NationalCountryID);
 
             this._Mode = enMode.Update;
 
@@ -93,7 +93,7 @@ namespace DVLDBusinessLayar
             
             this.PersonID = clsDataAccessPeople.AddNewPerson(this.NationalNumber, this.FirstName, this.SecondName,
                 this.ThirdName, this.LastName, this.DateOfBirth, (byte)this.Gender, this.Address, this.Phone,
-                this.Email, this.NationalCountryID, this.ImagePath);
+                this.Email, this.Country.ID, this.ImagePath);
 
             return this.PersonID > 0;
         }
@@ -102,7 +102,7 @@ namespace DVLDBusinessLayar
         {
             return clsDataAccessPeople.UpdatePerson(this.PersonID, this.NationalNumber, this.FirstName, this.SecondName,
                 this.ThirdName, this.LastName, this.DateOfBirth, (byte)this.Gender, this.Address, this.Phone,
-                this.Email, this.NationalCountryID, this.ImagePath);
+                this.Email, this.Country.ID, this.ImagePath);
         }
 
         public static clsPerson FindByID(int PersonID)
@@ -166,6 +166,11 @@ namespace DVLDBusinessLayar
         public static bool IsPersonExist(int PersonID)
         {
             return clsDataAccessPeople.IsPersonExist(PersonID);
+        }
+
+        public static bool IsPersonExist(string NationalNumber)
+        {
+            return clsDataAccessPeople.IsPersonExist(NationalNumber);
         }
 
     }
